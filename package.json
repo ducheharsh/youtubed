@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:start":"cd prisma && npx prisma migrate dev && npx prisma migrate",
-    "format": "npx prettier --write \"src/**/*.{js,jsx,tsx}\""
+    "format": "npx prettier --write \"src/**/*.{js,jsx,tsx}\"",
+    "vercel-build": "cd prisma && npx prisma migrate dev && npx prisma migrate && next build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.3",
