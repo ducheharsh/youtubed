@@ -439,7 +439,7 @@ const CustomYouTubePlayer = ({
               time={formatTime(currentTime)}
               initialValue={noteInput}
               onChange={setNoteInput}
-              bool={false}
+              bool={true}
             />
             <button
               className="shadow-[inset_0_0_0_2px_#616467] text-black px-8 ml-2 py-4 mt-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-green-600 hover:text-white dark:text-neutral-200 transition duration-200"
