@@ -530,7 +530,7 @@ const CustomYouTubePlayer = ({
           <img
             className="md:w-24 w-20"
             src={
-              "https://github.com/ducheharsh/VedicVani/blob/main/Unscreen%2059%20PM.gif?raw=true"
+              "https://pub-9791152ac1134a02a51646c306b4738b.r2.dev/GIF%20optimizer.gif"
             }
             alt="bot"
           />
