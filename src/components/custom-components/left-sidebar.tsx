@@ -34,7 +34,7 @@ export default function LeftSidebar(data: any) {
           <SheetDescription>
             {data.playlistArr.map((video: any, index: number) => {
               return (
-                <SheetTrigger>
+                <SheetTrigger key={video.snippet.resourceId.videoId}>
                 <Ytcards
                   key={video.snippet.resourceId.videoId}
                   title={video.snippet.title}
