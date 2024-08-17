@@ -55,7 +55,7 @@ export default function ChatBot({ videoId }: { videoId: string }) {
 
   return (
     <div className="md:max-w-2xl  mx-auto p-2">
-      <div className="md:h-[600px] h-[400px] overflow-y-auto  bg-stone-900 p-4 mb-4 rounded-xl">
+      <div className="md:h-[600px] h-[400px] overflow-y-auto z-50  bg-stone-900 p-4 mb-4 rounded-xl">
         {chat.map((msg, index) => (
           <div
             key={index}

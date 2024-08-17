@@ -19,7 +19,7 @@ export default function PlaylistsWall() {
     return () => {
       window.removeEventListener("resize", resizeText);
     };
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     async function fetchData() {
@@ -38,7 +38,7 @@ export default function PlaylistsWall() {
       }
     }
     fetchData();
-  }, []);
+  }, [session]);
 
   const resizeText = () => {
     const container = containerRef.current;

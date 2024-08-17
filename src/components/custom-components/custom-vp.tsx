@@ -361,7 +361,7 @@ const CustomYouTubePlayer = ({
             <div
               key={index}
               id="barmarkers"
-              className="absolute top-0  bg-red-500 rounded-full transform -translate-y-1/2 cursor-pointer z-10"
+              className="absolute top-0  bg-red-500 rounded-full transform -translate-y-1/2 cursor-pointer z-5"
               style={{ left: `${(note.time / duration) * 100}%` }}
               onMouseEnter={() => setHoveredNote(note)}
               onMouseLeave={() => setHoveredNote(null)}
