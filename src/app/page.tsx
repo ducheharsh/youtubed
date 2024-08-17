@@ -59,26 +59,16 @@ export default function Home() {
       <div className="relative z-10 min-h-screen overflow-y-auto">
         <Appbar />
         <section className=" h-screen w-full flex mt-[20vh] justify-center">
-          <div className="flex flex-col w-full items-center px-4">
+          <div className="flex flex-col w-full xl:mt-0 mt-[10vh] items-center px-4">
             <h2 className="mb-12 group flex  text-center sm:text-7xl drop-shadow-xl ">
               <span
-                className={`text-8xl group-hover: text-white sm:text-9xl ${myFont.variable} translate-x-5 font-poppins uppercase lg:text-[300px] `}
+                className={`text-8xl group-hover: text-white drop-shadow-2xl sm:text-9xl ${myFont.variable} font-poppins uppercase lg:text-[300px] `}
               >
-                Y
-              </span>
-              <img
-                src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719466107244/fad13963-ba76-47f1-af51-200e1c0fca9d.png"
-                className="md:h-[9vw] sm:h-[6vw] h-[8vw] mt-12 md:mt-28 md:mr-2  rotate-12"
-                alt="Flowbite Logo"
-              />
-              <span
-                className={`text-8xl group-hover: text-white sm:text-9xl ${myFont.variable} font-poppins uppercase lg:text-[300px] `}
-              >
-                UTUBED
+                YOUTUBED
               </span>
             </h2>
             <h3></h3>
-            <div className="w-3/4 mt-8">
+            <div className="xl:w-3/4 w-[100%] mt-8">
               <PlaceholdersAndVanishInput
                 placeholders={placeholders}
                 onChange={handleChange}

@@ -19,7 +19,7 @@ export default function Appbar() {
           <img
             src="https://cdn.hashnode.com/res/hashnode/image/upload/v1719466107244/fad13963-ba76-47f1-af51-200e1c0fca9d.png"
             className="h-8"
-            alt="Flowbite Logo"
+            alt="Logo"
           />
           <span className="self-center text-2xl font-poppins font-semibold whitespace-nowrap text-white">
             Youtubed
