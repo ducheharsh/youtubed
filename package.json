@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:start":"cd prisma && npx prisma migrate dev && npx prisma generate",
+    "db:start": "cd prisma && npx prisma migrate dev && npx prisma generate",
     "format": "npx prettier --write \"src/**/*.{js,jsx,tsx}\"",
     "vercel-build": "cd prisma && npx prisma migrate dev && npx prisma generate && cd .. && next build"
   },
@@ -58,7 +58,8 @@
     "use-react-screenshot": "^4.0.0",
     "uuid": "^10.0.0",
     "youtube-transcript": "^1.2.1",
-    "youtube-transcript-api": "^1.1.2"
+    "youtube-transcript-api": "^1.1.2",
+    "youtubei.js": "^9.4.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.5",

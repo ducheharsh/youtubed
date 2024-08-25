@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   try {
     const transcript = await fetchTranscript(videoId);
-    console.log('Transcript:', transcript);
+
     const model = await createGeminiModel();
 
     const chain = createTranscriptChain(model);
