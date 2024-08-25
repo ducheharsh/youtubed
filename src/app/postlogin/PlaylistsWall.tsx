@@ -8,8 +8,8 @@ import { Suspense, useEffect, useRef, useState } from "react";
 export default function PlaylistsWall(session: any) {
   const router = useRouter();
   console.log("Session", session);
-  console.log("Session data", JSON.parse(session?.session.value).accessToken);
-  const accessToken = JSON.parse(session?.session.value).accessToken;
+  console.log("Session data", session.session.accessToken)
+  const accessToken = session.session.accessToken
   const [data, setData] = useState([]);
   const containerRef = useRef(null);
   const textRef = useRef(null);
