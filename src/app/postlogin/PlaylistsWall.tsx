@@ -126,9 +126,10 @@ export default function PlaylistsWall(session: any) {
                     `https://youtube.com/playlist?list=${playlist.id}`,
                   );
                 }}
+                key={playlist.id}
               >
                 <PlaylistsHolder
-                  key={playlist.id}
+       
                   thumbnail={playlist.snippet.thumbnails.high.url}
                   title={playlist.snippet.title}
                   channel={playlist.snippet.channelTitle}
