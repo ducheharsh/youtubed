@@ -73,19 +73,13 @@ function ClientSideComponent() {
       </div>
     );
   }
-
   return (
-    <div className="text-white">
-      <div className="flex md:fixed top-0 border-r-2 md:h-screen" id="sidebar">
-        <LeftSidebar
-          className="md:h-full md:fixed col-span-4"
-          playlistArr={data}
-        />
-      </div>
-      <div className="md:ml-16 md:mt-4 rounded-lg col-span-6 md:col-span-4">
-        <CustomYouTubePlayer info={data} videoId={vid} pid={pid} />
-      </div>
-    </div>
+    <CustomYouTubePlayer
+      session={session}
+      info={data}
+      videoId={vid}
+      pid={pid}
+    />
   );
 }
 

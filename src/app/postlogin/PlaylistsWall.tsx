@@ -5,9 +5,11 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-export default function PlaylistsWall() {
+export default function PlaylistsWall(session: any) {
   const router = useRouter();
-  const session = useSession();
+  console.log("Session", session);
+  console.log("Session data", JSON.parse(session?.session.value).accessToken);
+  const accessToken = JSON.parse(session?.session.value).accessToken;
   const [data, setData] = useState([]);
   const containerRef = useRef(null);
   const textRef = useRef(null);
@@ -28,7 +30,7 @@ export default function PlaylistsWall() {
           `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=10&mine=true&fields=items&key=${process.env.YOUTUBE_API_KEY}`,
           {
             headers: {
-              Authorization: `Bearer ${(session?.data as any).accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           },
         );
@@ -116,11 +118,7 @@ export default function PlaylistsWall() {
         >
           <ul className="max-h-screen overflow-y-auto flex flex-wrap w-screen justify-items-center">
             {data.map((playlist: any) => (
-              <PlaylistsHolder
-                key={playlist.id}
-                thumbnail={playlist.snippet.thumbnails.high.url}
-                title={playlist.snippet.title}
-                channel={playlist.snippet.channelTitle}
+              <div
                 onClick={() => {
                   router.push("/dashboard");
                   localStorage.setItem(
@@ -128,7 +126,14 @@ export default function PlaylistsWall() {
                     `https://youtube.com/playlist?list=${playlist.id}`,
                   );
                 }}
-              />
+              >
+                <PlaylistsHolder
+                  key={playlist.id}
+                  thumbnail={playlist.snippet.thumbnails.high.url}
+                  title={playlist.snippet.title}
+                  channel={playlist.snippet.channelTitle}
+                />
+              </div>
             ))}
           </ul>
         </div>

@@ -27,20 +27,34 @@ import { useSession } from "next-auth/react";
 import ChatBot from "./chatbot";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import LeftSidebar from "./left-sidebar";
 
 const CustomYouTubePlayer = ({
   videoId,
   info,
   pid,
+  session,
 }: {
   videoId: string;
   info: any;
   pid: any;
+  session: any;
 }) => {
   //Driver js for onboarding
   const driverObj = driver({
     showProgress: true,
+
     steps: [
+      {
+        element: "#sidebar",
+        popover: {
+          title: "This is the sidebar",
+          description:
+            "Here is the code example showing animated tour. Let's walk you through it.",
+          side: "right",
+          align: "start",
+        },
+      },
       {
         element: "#videoplayer",
         popover: {
@@ -114,6 +128,7 @@ const CustomYouTubePlayer = ({
     localStorage.setItem("firstTime", "true");
   }
 
+  //sidebar data
   // Player States
   const [player, setPlayer] = useState<YouTubePlayer | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -142,11 +157,9 @@ const CustomYouTubePlayer = ({
 
   // Other States
   const [description, setDescription] = useState<JSONContent>() || {};
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const editorRef = useRef(null);
   const searchParams = useSearchParams();
   const index = searchParams.get("index") || 0;
-  const session = useSession();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -286,257 +299,271 @@ const CustomYouTubePlayer = ({
   }
 
   const [uuid] = useState(uid(`${videoId}-`));
-  
+
   return (
-    <div className="grid grid-cols-6 mx-auto p-4" id={videoId}>
-      <div
-        id="videoplayer"
-        className="col-span-6 md:col-span-4 relative pb-[56.25%] h-0 overflow-hidden mb-4"
-      >
-        <YouTube
-          videoId={videoId}
-          onReady={onReady}
-          title="YouTube video player"
-          opts={{
-            playerVars: { controls: 0 },
-            width: "100%",
-            height: "100%",
-          }}
-          onPlay={() => {
-            const start = new Date().getTime();
-            setStart(start);
-            setOnPlay(!onPlay);
-            setIsPlaying(true);
-          }}
-          onPause={() => {
-            const end = new Date().getTime();
-            let time = end / 1000 - start / 1000;
-            console.log(time);
-            setProgressState([...ProgressState, time]);
-            const sum = ProgressState.reduce(
-              (partialSum, a) => partialSum + a,
-              0,
-            );
-            console.log(formatTime(sum));
-            const results = Number(sum.toFixed(2));
-            console.log(results, "prt");
-            setProgressSum(results);
-            setOnPlay(!onPlay);
-            setIsPlaying(false);
-            localStorage.setItem(
-              `${pid}_progress`,
-              JSON.stringify(progressSum),
-            );
-          }}
-          className="absolute rounded-xl overflow-auto top-0 left-0 w-full h-full"
+    <div className="text-white">
+      <div className="flex md:fixed top-0 border-r-2 md:h-screen" id="sidebar">
+        <LeftSidebar
+          className="md:h-full md:fixed col-span-4"
+          playlistArr={info}
         />
       </div>
-
-      <div className="col-span-2 flex-col hidden md:flex  md:justify-center items-center">
-        <h1 className="text-lg font-semibold text-start mb-2 ">
-          My Progress 🧑‍💻
-        </h1>
-        <Progress id="progressBar" value={progressSum} className="w-3/4 mb-4" />
-        <ChapterTile
-          id="chapterTile"
-          onc={chapterSeek}
-          className="hidden md:block"
-        />
-      </div>
-
-      <div id="customprogbar" className="col-span-6 md:col-span-4">
-        <div
-          className="relative mb-4 cursor-pointer"
-          onClick={handleProgressBarClick}
-          ref={progressBarRef}
-        >
-          <div className="h-4 bg-gray-200/40 rounded">
-            <div
-              className="h-full bg-purple-500 rounded-md"
-              style={{ width: `${(currentTime / duration) * 100}%` }}
-            ></div>
-          </div>
-
-          {popupNotes.map((note, index) => (
-            <div
-              key={index}
-              id="barmarkers"
-              className="absolute top-0  bg-red-500 rounded-full transform -translate-y-1/2 cursor-pointer z-5"
-              style={{ left: `${(note.time / duration) * 100}%` }}
-              onMouseEnter={() => setHoveredNote(note)}
-              onMouseLeave={() => setHoveredNote(null)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="size-6 z-10"
-              >
-                <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
-              </svg>
-            </div>
-          ))}
-
-          {hoveredNote && (
-            <div
-              className="absolute -top-10 transform text-black -translate-x-1/2 bg-white border border-gray-200 rounded p-2 shadow-md z-20  break-words"
-              style={{ left: `${(hoveredNote.time / duration) * 100}%` }}
-            >
-              <p className="text-sm m-0">
-                {(hoveredNote as any).note.content[0].content[0].text}
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="flex justify-between mb-4">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-        <div className="col-span-4 h-fit mb-2 font-semibold text-lg">
-          {info[index].snippet.title}
-        </div>
-
-        <div className="col-span-4 mb-6">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>Description</AccordionTrigger>
-              <AccordionContent className=" whitespace-pre-line">
-                <TailwindEditor
-                  id={uuid}
-                  initialValue={description}
-                  bool={false}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={() => {
-              isPlaying ? player.pauseVideo() : player.playVideo();
-              setIsPlaying(!isPlaying);
-            }}
-            className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200"
+      <div className="md:ml-16 md:mt-4 rounded-lg col-span-6 md:col-span-4">
+        <div className="grid grid-cols-6 mx-auto p-4" id={videoId}>
+          <div
+            id="videoplayer"
+            className="col-span-6 md:col-span-4 relative pb-[56.25%] h-0 overflow-hidden mb-4"
           >
-            {isPlaying ? "Pause ∣∣" : "Play ▶️"}
-          </button>
-
-          <button
-            id="addnote"
-            className="shadow-[inset_0_0_0_2px_#616467] text-black px-10 ml-2 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200"
-            onClick={() => setShowNoteInput(!showNoteInput)}
-          >
-            Add Note +
-          </button>
-        </div>
-        {showNoteInput && (
-          <div className="mb-4">
-            <TailwindEditor
-              saveNote={addPopupNote}
-              id={uuid}
-              time={formatTime(currentTime)}
-              initialValue={noteInput}
-              onChange={setNoteInput}
-              bool={true}
-            />
-            <button
-              className="shadow-[inset_0_0_0_2px_#616467] text-black px-8 ml-2 py-4 mt-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-green-600 hover:text-white dark:text-neutral-200 transition duration-200"
-              onClick={() => {
-                addPopupNote();
+            <YouTube
+              videoId={videoId}
+              onReady={onReady}
+              title="YouTube video player"
+              opts={{
+                playerVars: { controls: 0 },
+                width: "100%",
+                height: "100%",
               }}
-            >
-              Save Note
-            </button>
+              onPlay={() => {
+                const start = new Date().getTime();
+                setStart(start);
+                setOnPlay(!onPlay);
+                setIsPlaying(true);
+              }}
+              onPause={() => {
+                const end = new Date().getTime();
+                let time = end / 1000 - start / 1000;
+                console.log(time);
+                setProgressState([...ProgressState, time]);
+                const sum = ProgressState.reduce(
+                  (partialSum, a) => partialSum + a,
+                  0,
+                );
+                console.log(formatTime(sum));
+                const results = Number(sum.toFixed(2));
+                console.log(results, "prt");
+                setProgressSum(results);
+                setOnPlay(!onPlay);
+                setIsPlaying(false);
+                localStorage.setItem(
+                  `${pid}_progress`,
+                  JSON.stringify(progressSum),
+                );
+              }}
+              className="absolute rounded-xl overflow-auto top-0 left-0 w-full h-full"
+            />
           </div>
-        )}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Popup Notes 📝:</h3>
 
-          {popupNotes.map((note, index) => (
-            <div key={note.time} className="mt-4">
-              <h1 className="flex mb-2">
-                Timestamp:
-                <a
-                  className="hover:cursor-pointer hover:text-blue-700 hover:underline font-bold ml-2"
+          <div className="col-span-2 flex-col hidden md:flex  md:justify-center items-center">
+            <h1 className="text-lg font-semibold text-start mb-2 ">
+              My Progress 🧑‍💻
+            </h1>
+            <Progress
+              id="progressBar"
+              value={progressSum}
+              className="w-3/4 mb-4"
+            />
+            <ChapterTile
+              id="chapterTile"
+              onc={chapterSeek}
+              className="hidden md:block"
+            />
+          </div>
+
+          <div id="customprogbar" className="col-span-6 md:col-span-4">
+            <div
+              className="relative mb-4 cursor-pointer"
+              onClick={handleProgressBarClick}
+              ref={progressBarRef}
+            >
+              <div className="h-4 bg-gray-200/40 rounded">
+                <div
+                  className="h-full bg-purple-500 rounded-md"
+                  style={{ width: `${(currentTime / duration) * 100}%` }}
+                ></div>
+              </div>
+
+              {popupNotes.map((note, index) => (
+                <div
+                  key={index}
+                  id="barmarkers"
+                  className="absolute top-0  bg-red-500 rounded-full transform -translate-y-1/2 cursor-pointer z-5"
+                  style={{ left: `${(note.time / duration) * 100}%` }}
+                  onMouseEnter={() => setHoveredNote(note)}
+                  onMouseLeave={() => setHoveredNote(null)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-6 z-10"
+                  >
+                    <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+                  </svg>
+                </div>
+              ))}
+
+              {hoveredNote && (
+                <div
+                  className="absolute -top-10 transform text-black -translate-x-1/2 bg-white border border-gray-200 rounded p-2 shadow-md z-20  break-words"
+                  style={{ left: `${(hoveredNote.time / duration) * 100}%` }}
+                >
+                  <p className="text-sm m-0">
+                    {(hoveredNote as any).note.content[0].content[0].text}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between mb-4">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+            <div className="col-span-4 h-fit mb-2 font-semibold text-lg">
+              {info[index].snippet.title}
+            </div>
+
+            <div className="col-span-4 mb-6">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>Description</AccordionTrigger>
+                  <AccordionContent className=" whitespace-pre-line">
+                    <TailwindEditor
+                      id={uuid}
+                      initialValue={description}
+                      bool={false}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => {
+                  isPlaying ? player.pauseVideo() : player.playVideo();
+                  setIsPlaying(!isPlaying);
+                }}
+                className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200"
+              >
+                {isPlaying ? "Pause ∣∣" : "Play ▶️"}
+              </button>
+
+              <button
+                id="addnote"
+                className="shadow-[inset_0_0_0_2px_#616467] text-black px-10 ml-2 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200"
+                onClick={() => setShowNoteInput(!showNoteInput)}
+              >
+                Add Note +
+              </button>
+            </div>
+            {showNoteInput && (
+              <div className="mb-4">
+                <TailwindEditor
+                  saveNote={addPopupNote}
+                  id={uuid}
+                  time={formatTime(currentTime)}
+                  initialValue={noteInput}
+                  onChange={setNoteInput}
+                  bool={true}
+                />
+                <button
+                  className="shadow-[inset_0_0_0_2px_#616467] text-black px-8 ml-2 py-4 mt-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-green-600 hover:text-white dark:text-neutral-200 transition duration-200"
                   onClick={() => {
-                    handleSeek(note.time);
+                    addPopupNote();
                   }}
                 >
-                  {" "}
-                  {formatTime(note.time)}
-                </a>
-              </h1>
-              <TailwindEditor
-                onChange={() => {}}
-                ref={editorRef}
-                key={videoId}
-                id={uuid}
-                initialValue={note.note}
-                time={formatTime(currentTime)}
-                bool={Bool}
-              />
-              <button
-                className="my-3 hover:bg-slate-400 rounded-xl p-2"
-                onClick={() => {
-                  if (confirm("Are you sure you want to delete this note?")) {
-                    console.log("deleting note");
-                    const newNotes = popupNotes.filter(
-                      (n) => n.time !== note.time,
-                    );
-                    setPopupNotes(newNotes);
-                    try {
-                      const deleteNote = axios
-                        .post("/api/notes", {
-                          userId: (session?.data as any).id,
-                          vid: videoId,
-                          notes: newNotes,
-                          pid: pid,
-                        })
-                        .then((res) => {
-                          console.log(res, "deleted ma boy");
-                        });
-                    } catch (err) {
-                      console.log(err, "error while deleting note");
-                    }
-                  } else {
-                    console.log("cancelled");
-                  }
-                }}
-              >
-                Delete 🗑️
-              </button>
-              <button
-                className="hover:bg-slate-400 rounded-xl p-2"
-                onClick={() => {}}
-              >
-                Edit ✏️
-              </button>
+                  Save Note
+                </button>
+              </div>
+            )}
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Popup Notes 📝:</h3>
 
-              <hr />
+              {popupNotes.map((note, index) => (
+                <div key={note.time} className="mt-4">
+                  <h1 className="flex mb-2">
+                    Timestamp:
+                    <a
+                      className="hover:cursor-pointer hover:text-blue-700 hover:underline font-bold ml-2"
+                      onClick={() => {
+                        handleSeek(note.time);
+                      }}
+                    >
+                      {" "}
+                      {formatTime(note.time)}
+                    </a>
+                  </h1>
+                  <TailwindEditor
+                    onChange={() => {}}
+                    ref={editorRef}
+                    key={videoId}
+                    id={uuid}
+                    initialValue={note.note}
+                    time={formatTime(currentTime)}
+                    bool={Bool}
+                  />
+                  <button
+                    className="my-3 hover:bg-slate-400 rounded-xl p-2"
+                    onClick={() => {
+                      if (
+                        confirm("Are you sure you want to delete this note?")
+                      ) {
+                        console.log("deleting note");
+                        const newNotes = popupNotes.filter(
+                          (n) => n.time !== note.time,
+                        );
+                        setPopupNotes(newNotes);
+                        try {
+                          const deleteNote = axios
+                            .post("/api/notes", {
+                              userId: (session?.data as any).id,
+                              vid: videoId,
+                              notes: newNotes,
+                              pid: pid,
+                            })
+                            .then((res) => {
+                              console.log(res, "deleted ma boy");
+                            });
+                        } catch (err) {
+                          console.log(err, "error while deleting note");
+                        }
+                      } else {
+                        console.log("cancelled");
+                      }
+                    }}
+                  >
+                    Delete 🗑️
+                  </button>
+                  <button
+                    className="hover:bg-slate-400 rounded-xl p-2"
+                    onClick={() => {}}
+                  >
+                    Edit ✏️
+                  </button>
+
+                  <hr />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      <div className=" col-span-2 m-4"></div>
+          </div>
+          <div className=" col-span-2 m-4"></div>
 
-      <div className="fixed bottom-0 right-3 ">
-        <button
-          id="bot"
-          onClick={toggleMenu}
-          className="w-24 h-24 rounded-full shadow-lg flex items-center justify-center focus:outline-none transition-transform hover:scale-105 active:scale-95"
-        >
-          <img
-            className="md:w-24 w-20"
-            src={
-              "https://pub-9791152ac1134a02a51646c306b4738b.r2.dev/GIF%20optimizer.gif"
-            }
-            alt="bot"
-          />
-        </button>
-        <div
-          className={`
+          <div className="fixed bottom-0 right-3 ">
+            <button
+              id="bot"
+              onClick={toggleMenu}
+              className="w-24 h-24 rounded-full shadow-lg flex items-center justify-center focus:outline-none transition-transform hover:scale-105 active:scale-95"
+            >
+              <img
+                className="md:w-24 w-20"
+                src={
+                  "https://pub-9791152ac1134a02a51646c306b4738b.r2.dev/GIF%20optimizer.gif"
+                }
+                alt="bot"
+              />
+            </button>
+            <div
+              className={`
           absolute z-50 bottom-24 right-0 md:w-[60vh] w-[40vh] rounded-lg shadow-xl
           transform transition-all duration-500 ease-out
           ${
@@ -545,8 +572,10 @@ const CustomYouTubePlayer = ({
               : "scale-95 opacity-0 pointer-events-none"
           }
         `}
-        >
-          <ChatBot key={videoId} videoId={videoId} />
+            >
+              <ChatBot key={videoId} videoId={videoId} />
+            </div>
+          </div>
         </div>
       </div>
     </div>

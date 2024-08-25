@@ -9,7 +9,7 @@ export default function PlaylistsHolder({
   thumbnail?: string;
   title: string;
   channel: string;
-  onClick: () => void;
+  onClick?: () => void;
 }) {
   return (
     <li

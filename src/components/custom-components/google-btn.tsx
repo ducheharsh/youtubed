@@ -31,9 +31,7 @@ export default function GoogleBtn({ onClick }: { onClick: () => void }) {
           ></path>
         </svg>
       </div>
-      <span className="text-sm text-white tracking-wider">
-        Google
-      </span>
+      <span className="text-sm text-white tracking-wider">Google</span>
     </button>
   );
 }

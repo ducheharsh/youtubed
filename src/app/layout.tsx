@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Youtubed"
+  title: "Youtubed",
 };
 
 export default function RootLayout({

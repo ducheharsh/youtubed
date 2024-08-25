@@ -35,20 +35,19 @@ export default function LeftSidebar(data: any) {
             {data.playlistArr.map((video: any, index: number) => {
               return (
                 <SheetTrigger key={video.snippet.resourceId.videoId}>
-                <Ytcards
-                  key={video.snippet.resourceId.videoId}
-                  title={video.snippet.title}
-                  thumbnails={video.snippet.thumbnails}
-                  time={video.snippet.publishedAt}
-                  onc={() => {
-                    router.push(
-                      `/dashboard?vid=${video.snippet.resourceId.videoId}&index=${index}`,
-                    );
-                  }}
-                />
+                  <Ytcards
+                    key={video.snippet.resourceId.videoId}
+                    title={video.snippet.title}
+                    thumbnails={video.snippet.thumbnails}
+                    time={video.snippet.publishedAt}
+                    onc={() => {
+                      router.push(
+                        `/dashboard?vid=${video.snippet.resourceId.videoId}&index=${index}`,
+                      );
+                    }}
+                  />
                 </SheetTrigger>
               );
-
             })}
           </SheetDescription>
         </SheetHeader>
