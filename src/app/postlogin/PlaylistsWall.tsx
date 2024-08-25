@@ -40,7 +40,7 @@ export default function PlaylistsWall(session: any) {
       }
     }
     fetchData();
-  }, [session, setData, data]);
+  }, [session,accessToken, setData, data]);
 
   const resizeText = () => {
     const container = containerRef.current;

@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { NEXT_AUTH } from "@/lib/auth/auth";
 
 export default async function PostLogin() {
-  const session = getServerSession(NEXT_AUTH);
+  const session = await getServerSession(NEXT_AUTH);
   return (
     <BackgroundGradientAnimation overlayOpacity={1} interactive={false}>
       <WelcomeScreen />
