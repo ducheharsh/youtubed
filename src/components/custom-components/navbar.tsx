@@ -11,7 +11,7 @@ export default function Appbar() {
 
   const session = useSession();
   const router = useRouter();
-  console.log(session);
+
   return (
     <nav className=" border-b-2 border-gray-200/20">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">

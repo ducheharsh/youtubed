@@ -286,7 +286,7 @@ const CustomYouTubePlayer = ({
   }
 
   const [uuid] = useState(uid(`${videoId}-`));
-  console.log(info, "this is the info");
+  
   return (
     <div className="grid grid-cols-6 mx-auto p-4" id={videoId}>
       <div

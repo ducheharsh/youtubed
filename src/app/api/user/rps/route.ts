@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 export async function GET(req: NextRequest){
     const body = await req.json();
-    console.log("Body",body)
+
 
   try{
     const recentData = await prisma.playlists.findMany({
