@@ -28,7 +28,9 @@ export const NEXT_AUTH ={
                     scope:["https://www.googleapis.com/auth/userinfo.profile",
                         "https://www.googleapis.com/auth/youtube.readonly",
                     "email" ].join(" "),
-
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
                 }
             }
         },
