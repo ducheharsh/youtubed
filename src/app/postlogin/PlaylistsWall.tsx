@@ -27,7 +27,7 @@ export default function PlaylistsWall(session: any) {
     async function fetchData() {
       try {
         const response = await axios.get(
-          `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=10&mine=true&fields=items&key=${process.env.YOUTUBE_API_KEY}`,
+          `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=10&mine=true&fields=items&key=${process.env.NEXT_PUBLIC_YOUTUBE_API_KEY}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -40,7 +40,7 @@ export default function PlaylistsWall(session: any) {
       }
     }
     fetchData();
-  }, [session,accessToken, setData, data]);
+  }, [session, accessToken, setData, data]);
 
   const resizeText = () => {
     const container = containerRef.current;
@@ -129,7 +129,7 @@ export default function PlaylistsWall(session: any) {
                 key={playlist.id}
               >
                 <PlaylistsHolder
-       
+
                   thumbnail={playlist.snippet.thumbnails.high.url}
                   title={playlist.snippet.title}
                   channel={playlist.snippet.channelTitle}

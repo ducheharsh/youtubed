@@ -26,12 +26,18 @@ function ClientSideComponent() {
 
   useEffect(() => {
     async function fetchData() {
+      if (!pid) {
+        setIsLoading(false);
+        return;
+      }
       try {
         const response = await axios.get(
-          `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${pid}&prettyPrint=true&key=${process.env.YOUTUBE_API_KEY}`,
+          `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${pid}&prettyPrint=true&key=${process.env.NEXT_PUBLIC_YOUTUBE_API_KEY}`,
           {
             headers: {
-              Authorization: `Bearer ${session.data ? (session.data as any).accessToken : ""}`,
+              ...(session.data && {
+                Authorization: `Bearer ${(session.data as any).accessToken}`,
+              }),
             },
           },
         );
@@ -46,7 +52,7 @@ function ClientSideComponent() {
     }
 
     fetchData();
-  }, [pid, session]);
+  }, [pid, session, vid]);
 
   useEffect(() => {
     async function addData() {
