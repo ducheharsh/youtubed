@@ -23,7 +23,6 @@ function ClientSideComponent() {
     const match: RegExpMatchArray | null = url.match(regex);
     return match ? (match as RegExpExecArray)[1] : null;
   }
-
   useEffect(() => {
     async function fetchData() {
       if (!pid) {
@@ -31,15 +30,13 @@ function ClientSideComponent() {
         return;
       }
       try {
+        const headers = session.data
+          ? { Authorization: `Bearer ${(session.data as any).accessToken}` }
+          : {};
+
         const response = await axios.get(
           `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${pid}&prettyPrint=true&key=${process.env.NEXT_PUBLIC_YOUTUBE_API_KEY}`,
-          {
-            headers: {
-              ...(session.data && {
-                Authorization: `Bearer ${(session.data as any).accessToken}`,
-              }),
-            },
-          },
+          { headers }
         );
         setData(response.data.items);
       } catch (error) {
